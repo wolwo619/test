@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TCS Cloud Tool</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <!-- Favicon icon -->
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- Fontawesome icon -->
+    <link rel="stylesheet" href="assets/fonts/fontawesome/css/fontawesome-all.min.css">
+    <!-- Animation css -->
+    <link rel="stylesheet" href="assets/plugins/animation/css/animate.min.css">
+    <!-- Notification css -->
+    <link rel="stylesheet" href="assets/plugins/notification/css/notification.min.css">
+    <!-- Modal-window-effects css -->
+    <link rel="stylesheet" href="assets/plugins/modal-window-effects/css/md-modal.css">
+    <!-- Prism css -->
+    <link rel="stylesheet" href="assets/plugins/prism/css/prism.min.css">
+    <!-- Style css -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  
+    <div id="root">
+        
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/vendor-all.min.js"></script>
+    <script src="assets/js/pcoded.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="assets/plugins/footable/js/footable.min.js"></script>
+    <script src="assets/plugins/notification/js/bootstrap-growl.min.js"></script>
+    <script src="assets/plugins/modal-window-effects/js/classie.js"></script>
+    <script src="assets/plugins/modal-window-effects/js/modalEffects.js"></script>
+    <script type="text/javascript">
+        // on page load...
+        moveProgressBar();
+        // on browser resize...
+        $(window).resize(function() {
+            moveProgressBar();
+        });
+        // progress bar
+        function moveProgressBar() {
+          console.log("moveProgressBar");
+            var getPercent = ($('.progress-wrap').data('progress-percent') / 100);
+            var getProgressWrapWidth = $('.progress-wrap').width();
+            var progressTotal = getPercent * getProgressWrapWidth;
+            var animationLength = 2500;
+            
+            // on page load, animate percentage bar to data percentage length
+            // .stop() used to prevent animation queueing
+            $('.progress-bar').stop().animate({
+                left: progressTotal
+            }, animationLength);
+        }
+        // Image switchable tabs
+        $('.imgContent').hide();
+        $('.dataToggle').click(function() {
+            $('.imgContent').hide();
+            $("#" + $(this).data("img")).show();
+        });
+        $(document).ready(function() {
+            $('#demo-foo-filtering').footable({
+                "paging": {
+                    "enabled": true
+                },
+                "sorting": {
+                    "enabled": true
+                }
+            });
+        });
+        $(document).ready(function() {
+			$('.minus').click(function () {
+				var $input = $(this).parent().find('input');
+				var count = parseInt($input.val()) - 1;
+				count = count < 1 ? 1 : count;
+				$input.val(count);
+				$input.change();
+				return false;
+			});
+			$('.plus').click(function () {
+				var $input = $(this).parent().find('input');
+				$input.val(parseInt($input.val()) + 1);
+				$input.change();
+				return false;
+			});
+        });
+        //Alert Messages
+    //     function Notify(message) {
+    //     $.growl({
+    //         message: message           
+    //     }, {
+    //         element: 'body',
+    //         type: 'inverse',
+    //         allow_dismiss: false,
+    //         label: 'Cancel',
+    //         className: 'btn-xs btn-inverse',
+    //         placement: {
+    //             from: 'top',
+    //             align: 'right'
+    //         },
+    //         offset: {
+    //             x: 30,
+    //             y: 80
+    //         },
+    //         spacing: 10,
+    //         z_index: 999999,
+    //         delay: 2500,
+    //         timer: 1500,
+    //         url_target: '_blank',
+    //         mouse_over: false,
+    //         animate: {
+    //             enter: 'animated fadeInRight',
+    //             exit: 'animated fadeOutRight'
+    //         },
+    //         icon_type: 'class',
+    //         template: '<div data-growl="container" class="alert" role="alert">' +
+    //             '<button type="button" class="close" data-growl="dismiss">' +
+    //             '<span aria-hidden="true">&times;</span>' +
+    //             '<span class="sr-only">Close</span>' +
+    //             '</button>' +
+    //             '<span data-growl="icon"></span>' +
+    //             '<span data-growl="title"></span>' +
+    //             '<span data-growl="message"></span>' +
+    //             '<a href="#!" data-growl="url"></a>' +
+    //             '</div>'
+    //     });
+    // };
+    
+        // $(document).ready(function() {
+        //     function notify(message, type) {
+        //         $.growl({
+        //             message: message
+        //         }, {
+        //             type: type,
+        //             allow_dismiss: false,
+        //             label: 'Cancel',
+        //             className: 'btn-xs btn-inverse',
+        //             placement: {
+        //                 from: 'top',
+        //                 align: 'right'
+                        
+        //             },
+        //             delay: 5000,
+        //             animate: {
+        //                 enter: 'animated fadeInRight',
+        //                 exit: 'animated fadeOutRight'
+        //             },
+        //             offset: {
+        //                 x: 30,
+        //                 y: 80
+        //             }
+        //         });
+        //     };
+        //    // notify('<i class="fas fa-check-circle f-16"></i>&nbsp; Added Successfully to Cart', 'inverse')
+        // });
+
+        /* Set rates + misc */
+        var taxRate = 0.05;
+        var shippingRate = 0.00; 
+        var fadeTime = 200;
+        /* Assign actions */
+        $('.product-quantity input').change( function() {
+            updateQuantity(this);
+        });
+        $('.product-removal button').click( function() {
+            removeItem(this);
+        });
+        /* Recalculate cart */
+        function recalculateCart()
+        {
+            var subtotal = 0;
+            /* Sum up row totals */
+            $('.product').each(function () {
+                subtotal += parseFloat($(this).children('.product-line-price').text());
+            });
+
+            /* Calculate totals */
+            var tax = subtotal * taxRate;
+            var shipping = (subtotal > 0 ? shippingRate : 0);
+            var total = subtotal + tax + shipping;
+
+            /* Update totals display */
+            $('.totals-value').fadeOut(fadeTime, function() {
+                $('#cart-subtotal').html(subtotal.toFixed(2));
+                $('#cart-tax').html(tax.toFixed(2));
+                $('#cart-shipping').html(shipping.toFixed(2));
+                $('#cart-total').html(total.toFixed(2));
+                if(total == 0){
+                    $('.checkout').fadeOut(fadeTime);
+                }else{
+                    $('.checkout').fadeIn(fadeTime);
+                }
+                $('.totals-value').fadeIn(fadeTime);
+            });
+        }
+        /* Update quantity */
+        function updateQuantity(quantityInput)
+        {
+            /* Calculate line price */
+            var productRow = $(quantityInput).parent().parent();
+            var price = parseFloat(productRow.children('.product-price').text());
+            var quantity = $(quantityInput).val();
+            var linePrice = price * quantity;
+
+            /* Update line price display and recalc cart totals */
+            productRow.children('.product-line-price').each(function () {
+                $(this).fadeOut(fadeTime, function() {
+                    $(this).text(linePrice.toFixed(2));
+                    recalculateCart();
+                    $(this).fadeIn(fadeTime);
+                });
+            });  
+        }
+        /* Remove item from cart */
+        function removeItem(removeButton)
+        {
+            /* Remove row from DOM and recalc cart total */
+            var productRow = $(removeButton).parent().parent();
+            productRow.slideUp(fadeTime, function() {
+                productRow.remove();
+                recalculateCart();
+            });
+        }
+    </script>
+</body>
+</html>
